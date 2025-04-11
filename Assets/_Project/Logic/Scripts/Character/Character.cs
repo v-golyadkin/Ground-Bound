@@ -10,14 +10,17 @@ public class Character : MonoBehaviour, IControllable
     private Vector2 _moveVelocity;
 
     private bool _isFacingRight;
+    private bool _isMoving;
 
     private Rigidbody2D _rb;
+    private Animator _animator;
 
     private void Awake()
     {
         _isFacingRight = true;
 
         _rb = GetComponent<Rigidbody2D>();
+        _animator = GetComponentInChildren<Animator>();
     }
 
     private void Update()
@@ -33,6 +36,10 @@ public class Character : MonoBehaviour, IControllable
     public void Move(Vector2 direction)
     {
         _moveDirection = direction;
+        //_moveDirection != Vector2.zero ? _animator.SetBool("isMoving", true) : _animator.SetBool("isMoving", false);
+
+        _isMoving = _moveDirection != Vector2.zero;
+        _animator.SetBool("isMoving", _isMoving);
     }
 
     private void MoveInternal()
@@ -45,11 +52,13 @@ public class Character : MonoBehaviour, IControllable
 
             _moveVelocity = Vector2.Lerp(_moveVelocity, targetVelocity, _playerConfig.acceleration * Time.fixedDeltaTime);
             _rb.linearVelocity = new Vector2(_moveVelocity.x, _rb.linearVelocity.y);
+            //_animator.SetBool("isMoving", true);
         }
         else if(_moveDirection == Vector2.zero)
         {
             _moveVelocity = Vector2.Lerp(_moveVelocity, Vector2.zero, _playerConfig.deceleration * Time.fixedDeltaTime);
             _rb.linearVelocity = new Vector2(_moveVelocity.x, _rb.linearVelocity.y);
+            //_animator.SetBool("isMoving", false);
         }
     }
 
