@@ -25,10 +25,17 @@ public class CharacterInputController : MonoBehaviour
         ReadMovement();
     }
 
+    private void OnDisable()
+    {
+        _gameInput.Disable();
+    }
+
     private void ReadMovement()
     {
         var inputDirection = _gameInput.Gameplay.Movement.ReadValue<Vector2>();
 
         _controllable.Move(inputDirection);
     }
+
+
 }
