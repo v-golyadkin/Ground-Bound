@@ -10,14 +10,14 @@ public class BalancePlatform : MonoBehaviour
     [SerializeField] AnimationCurve _movementCurve;
 
     private float _speed;
-    private float _timeToMove;
 
     private Vector3 _startPosition;
     private Vector3 _targetPosition;
 
-    private bool _playerOnPlatform;
+
     private Transform _playerTransform;
     private Coroutine _movePlatformCoroutine;
+
 
     private void Start()
     {
@@ -25,33 +25,32 @@ public class BalancePlatform : MonoBehaviour
         _targetPosition = _startPosition + _moveOffset;
     }
 
-
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            _playerOnPlatform = true;
             _playerTransform = collision.transform;
             _playerTransform.SetParent(transform);
 
-            if(_movePlatformCoroutine != null)
+            if (_movePlatformCoroutine != null)
             {
                 StopCoroutine(_movePlatformCoroutine);
+
             }
             _movePlatformCoroutine = StartCoroutine(MovePlatform(true));
         }
     }
 
-    private void OnCollisionExit2D(Collision2D collision)
+    private void OnTriggerExit2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            _playerOnPlatform = false;
             collision.transform.SetParent(null);
 
             if (_movePlatformCoroutine != null)
             {
                 StopCoroutine(_movePlatformCoroutine);
+
             }
             _movePlatformCoroutine = StartCoroutine(MovePlatform(false));
         }
@@ -59,19 +58,25 @@ public class BalancePlatform : MonoBehaviour
 
     IEnumerator MovePlatform(bool moveToTarget)
     {
+
         yield return new WaitForSeconds(_delay);
 
         var targetPosition = moveToTarget ? _targetPosition : _startPosition;
-        var _timeToMove = 0f;
+        var timeToMove = 0f;
 
         while(transform.position != targetPosition)
         {
             
-            _speed = _movementCurve.Evaluate(_timeToMove);
+            _speed = _movementCurve.Evaluate(timeToMove);
 
             transform.position = Vector3.MoveTowards(transform.position, targetPosition, _speed);
-            _timeToMove += Time.deltaTime;
+            timeToMove += Time.deltaTime;
             yield return null;
         }
+    }
+
+    private void OnDisable()
+    {
+        StopAllCoroutines();
     }
 }
