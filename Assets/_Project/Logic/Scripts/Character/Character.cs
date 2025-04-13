@@ -1,10 +1,11 @@
-using UnityEditor.Tilemaps;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class Character : MonoBehaviour, IControllable
 {
     [SerializeField] private PlayerConfig _playerConfig;
+
+    [SerializeField] private AudioSource _walkSource;
 
     private Vector2 _moveDirection;
     private Vector2 _moveVelocity;
@@ -36,10 +37,23 @@ public class Character : MonoBehaviour, IControllable
     public void Move(Vector2 direction)
     {
         _moveDirection = direction;
-        //_moveDirection != Vector2.zero ? _animator.SetBool("isMoving", true) : _animator.SetBool("isMoving", false);
 
         _isMoving = _moveDirection != Vector2.zero;
         _animator.SetBool("isMoving", _isMoving);
+
+        //AudioManager.Instance.PlaySFX("walk");
+        if (_isMoving && Mathf.Abs(_rb.linearVelocity.y) <= 1)
+        {
+            if (!_walkSource.isPlaying)
+            {
+                _walkSource.Play();
+            }
+            
+        }
+        else
+        {
+            _walkSource.Stop();
+        }
     }
 
     private void MoveInternal()
@@ -52,13 +66,11 @@ public class Character : MonoBehaviour, IControllable
 
             _moveVelocity = Vector2.Lerp(_moveVelocity, targetVelocity, _playerConfig.acceleration * Time.fixedDeltaTime);
             _rb.linearVelocity = new Vector2(_moveVelocity.x, _rb.linearVelocity.y);
-            //_animator.SetBool("isMoving", true);
         }
         else if(_moveDirection == Vector2.zero)
         {
             _moveVelocity = Vector2.Lerp(_moveVelocity, Vector2.zero, _playerConfig.deceleration * Time.fixedDeltaTime);
             _rb.linearVelocity = new Vector2(_moveVelocity.x, _rb.linearVelocity.y);
-            //_animator.SetBool("isMoving", false);
         }
     }
 
