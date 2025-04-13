@@ -41,7 +41,6 @@ public class Character : MonoBehaviour, IControllable
         _isMoving = _moveDirection != Vector2.zero;
         _animator.SetBool("isMoving", _isMoving);
 
-        //AudioManager.Instance.PlaySFX("walk");
         if (_isMoving && Mathf.Abs(_rb.linearVelocity.y) <= 1)
         {
             if (!_walkSource.isPlaying)

@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class MainMenuUI : MonoBehaviour
 {
@@ -7,6 +6,8 @@ public class MainMenuUI : MonoBehaviour
     {
         AudioManager.Instance.PlaySFX("ui_click");
 
-        SceneManager.LoadScene("Level_1");
+        gameObject.SetActive(false);
+
+        SceneLoader.Instance.LoadLevel("Level_1");
     }
 }

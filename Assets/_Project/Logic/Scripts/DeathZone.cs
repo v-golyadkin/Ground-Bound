@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class DeathZone : MonoBehaviour
 {
@@ -11,7 +10,7 @@ public class DeathZone : MonoBehaviour
         {
             collision.transform.SetParent(null);
 
-            SceneManager.LoadScene(_currentLevel.sceneName, LoadSceneMode.Single);
+            SceneLoader.Instance.LoadLevel(_currentLevel);
         }
     }
 }

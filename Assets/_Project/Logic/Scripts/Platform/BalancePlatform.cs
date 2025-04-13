@@ -75,6 +75,11 @@ public class BalancePlatform : MonoBehaviour
         }
     }
 
+    private void OnDestroy()
+    {
+        StopAllCoroutines();
+    }
+
     private void OnDisable()
     {
         StopAllCoroutines();
